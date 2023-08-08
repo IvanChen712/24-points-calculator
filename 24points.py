@@ -5,6 +5,7 @@ Number_count = 4
 Ops = ['/', '*', '+', '-']
 
 
+# define level for the four operands
 def level(op):
     if op == '*' or op == '/':
         lv = 2
@@ -13,6 +14,7 @@ def level(op):
     return lv
 
 
+# get numbers from user input
 def get_numbers(length):
     num_list = [0] * length
     for i in range(length):
@@ -20,6 +22,7 @@ def get_numbers(length):
     return num_list
 
 
+# get all possible equations without parentheses
 def get_raw_equations(num_list, op_list):
     raw_equations = []
 
@@ -32,7 +35,7 @@ def get_raw_equations(num_list, op_list):
     return raw_equations
 
 
-# This only works for 4 numbers.
+# add parentheses to a raw equation
 def add_parentheses(eq, pattern):
     if pattern == 0:
         return f"(({eq[:3]}){eq[3:5]}){eq[5:7]}"
@@ -46,6 +49,7 @@ def add_parentheses(eq, pattern):
         return f"{eq[:2]}({eq[2:4]}({eq[4:7]}))"
 
 
+# find the position of an operand
 def find_op_pos(eq, op):
     op_pos = []
     for i, char in enumerate(eq):
@@ -54,6 +58,7 @@ def find_op_pos(eq, op):
     return op_pos
 
 
+# swap two parts in the equation
 def swap_equation(index1, index2, index3, index4, eq):
     part1 = eq[index1:index2]
     part2 = eq[index3:index4]
@@ -61,6 +66,7 @@ def swap_equation(index1, index2, index3, index4, eq):
     return swapped_eq
 
 
+# get the beginning and ending indexes for two parts between an operand
 def get_op_part(pos, eq):
     left_bracket_pos = find_op_pos(eq, '(')
     right_bracket_pos = find_op_pos(eq, ')')
@@ -75,7 +81,7 @@ def get_op_part(pos, eq):
     else:
         if (len(list(filter(lambda x: x < pos, left_bracket_pos)))
                 > len(list(filter(lambda x: x < pos, right_bracket_pos)))):
-            # 左边的左括号比右括号多
+            # more left brackets in the left of the operand
             index1_begin = left_bracket_pos[1]
             index1_end = pos
         else:
@@ -92,7 +98,7 @@ def get_op_part(pos, eq):
     else:
         if (len(list(filter(lambda x: x > pos, left_bracket_pos)))
                 < len(list(filter(lambda x: x > pos, right_bracket_pos)))):
-            # 右边的左括号比右括号少
+            # less left operands in the right of the operand
             index2_begin = pos + 1
             index2_end = right_bracket_pos[0] + 1
         else:
@@ -102,6 +108,7 @@ def get_op_part(pos, eq):
     return index1_begin, index1_end, index2_begin, index2_end
 
 
+# add parentheses for all equations and remove duplicate and incorrect equations
 def add_parentheses_all_check(eqs, goal):
     correct_equations = set()
     for eq in eqs:
@@ -110,25 +117,26 @@ def add_parentheses_all_check(eqs, goal):
             try:
                 if eval(equation_with_parentheses) == goal:
                     correct_eq = equation_with_parentheses
-                    # print(correct_eq)
+
+                    # for + and *, swapping two parts between them is the same, remove them
                     plus_pos = find_op_pos(correct_eq, '+')
                     multiply_pos = find_op_pos(correct_eq, '*')
-                    # print(f'pos: {plus_pos + multiply_pos}')
                     flag = True
                     for i in plus_pos + multiply_pos:
                         index1_begin, index1_end, index2_begin, index2_end = get_op_part(i, correct_eq)
                         swapped_eq = swap_equation(index1_begin, index1_end, index2_begin, index2_end, correct_eq)
-                        # print(f'seq: {swapped_eq}')
                         if swapped_eq in correct_equations:
                             flag = False
                             break
                     if flag:
                         correct_equations.add(correct_eq)
+
             except ZeroDivisionError:
                 continue
     return correct_equations
 
 
+# print result info
 def print_result(eqs):
     if len(eqs) == 0:
         print('No solution.')
