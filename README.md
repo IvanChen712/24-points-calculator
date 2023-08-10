@@ -2,11 +2,12 @@
 
 24 points calculator in python
 
-This program only works for 4 numbers' calculation.
+* no limit on the size of numbers (even floats)
+* the goal can also be adjusted, not necessarily 24
+* repetitive solutions and redundant parentheses are removed
+* only works for 4 numbers' calculation
 
-In this program, all redundant solutions are removed. All redundant parentheses are removed.
-
-**Usage**: Input 4 numbers. Solutions will be printed.
+**Usage**: Input 4 numbers in four lines and solutions will be printed.
 
 **Example**:
 
@@ -38,4 +39,5 @@ Number 4:6
 
 **To be improved**:
 
+* check invalid input
 * add game mode, e.g., play with computer
