@@ -9,5 +9,4 @@ This program only works for 4 numbers' calculation.
 **To be improved**:
 
 * redundant parentheses
-* redundant solutions when two swaps are involved, e.g.,`7*(3+(3/7))` and `((3/7)+3)*7`
 * add game mode, e.g., play with computer

@@ -108,6 +108,32 @@ def get_op_part(pos, eq):
     return index1_begin, index1_end, index2_begin, index2_end
 
 
+# swap two parts between the operand according to its position
+def swap_by_op_pos(op_pos, eq):
+    index1_begin, index1_end, index2_begin, index2_end = get_op_part(op_pos, eq)
+    swapped_eq = swap_equation(index1_begin, index1_end, index2_begin, index2_end, eq)
+    return swapped_eq
+
+
+# If eq1 and eq2 can become the same by swapping parts between "+" or "*", they are basically equal.
+# By using recursion, we can deal with equations that have 2 or 3 operands.
+# With this function, 3,3,7,7 will only give 1 solution.
+def basically_equal(eq1, eq2, depth=0):
+    if eq1 == eq2:
+        return True
+
+    op_positions = find_op_pos(eq1, '+') + find_op_pos(eq1, '*')
+    max_depth = len(op_positions)
+
+    if depth >= max_depth:
+        return False
+
+    for pos in op_positions:
+        swapped_eq1 = swap_by_op_pos(pos, eq1)
+        if basically_equal(swapped_eq1, eq2, depth + 1):
+            return True
+
+
 # add parentheses for all equations and remove duplicate and incorrect equations
 def add_parentheses_all_check(eqs, goal):
     correct_equations = set()
@@ -117,20 +143,8 @@ def add_parentheses_all_check(eqs, goal):
             try:
                 if eval(equation_with_parentheses) == goal:
                     correct_eq = equation_with_parentheses
-
-                    # for + and *, swapping two parts between them is the same, remove them
-                    plus_pos = find_op_pos(correct_eq, '+')
-                    multiply_pos = find_op_pos(correct_eq, '*')
-                    flag = True
-                    for i in plus_pos + multiply_pos:
-                        index1_begin, index1_end, index2_begin, index2_end = get_op_part(i, correct_eq)
-                        swapped_eq = swap_equation(index1_begin, index1_end, index2_begin, index2_end, correct_eq)
-                        if swapped_eq in correct_equations:
-                            flag = False
-                            break
-                    if flag:
+                    if all(not basically_equal(correct_eq, previous_eq) for previous_eq in correct_equations):
                         correct_equations.add(correct_eq)
-
             except ZeroDivisionError:
                 continue
     return correct_equations
