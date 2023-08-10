@@ -37,23 +37,24 @@ def get_raw_equations(num_list, op_list):
 
 # add parentheses to a raw equation
 def add_parentheses(eq, pattern):
+    poses = find_op_pos(eq, '+-*/')
     if pattern == 0:
-        return f"(({eq[:3]}){eq[3:5]}){eq[5:7]}"
+        return f"(({eq[:poses[1]]}){eq[poses[1]:poses[2]]}){eq[poses[2]:]}"
     elif pattern == 1:
-        return f"({eq[:3]}){eq[3]}({eq[4:7]})"
+        return f"({eq[:poses[1]]}){eq[poses[1]]}({eq[poses[1]+1:]})"
     elif pattern == 2:
-        return f"({eq[:2]}({eq[2:5]})){eq[5:7]}"
+        return f"({eq[:poses[0]+1]}({eq[poses[0]+1:poses[2]]})){eq[poses[2]:]}"
     elif pattern == 3:
-        return f"{eq[:2]}(({eq[2:5]}){eq[5:7]})"
+        return f"{eq[:poses[0]+1]}(({eq[poses[0]+1:poses[2]]}){eq[poses[2]:]})"
     elif pattern == 4:
-        return f"{eq[:2]}({eq[2:4]}({eq[4:7]}))"
+        return f"{eq[:poses[0]+1]}({eq[poses[0]+1:poses[1]+1]}({eq[poses[1]+1:]}))"
 
 
 # find the position of an operand
 def find_op_pos(eq, op):
     op_pos = []
     for i, char in enumerate(eq):
-        if char == op:
+        if char in op:
             op_pos.append(i)
     return op_pos
 
@@ -150,6 +151,70 @@ def add_parentheses_all_check(eqs, goal):
     return correct_equations
 
 
+# judge whether a pair of parentheses can be removed
+def can_del_parentheses(op1_pos, op2_pos, eq):
+    if level(eq[op1_pos]) > level(eq[op2_pos]):
+        return True
+    elif op1_pos < op2_pos and level(eq[op1_pos]) == level(eq[op2_pos]):
+        return True
+    elif eq[op1_pos] == eq[op2_pos] and (eq[op1_pos] == '+' or eq[op1_pos] == '*'):
+        return True
+    return False
+
+
+# delete redundant parentheses for an equation
+def del_redundant_parentheses(eq):
+    left_poses = find_op_pos(eq, '(')
+    right_poses = find_op_pos(eq, ')')
+    op_poses = find_op_pos(eq, '+-*/')
+    corrected_eq = list(eq)
+
+    if left_poses[1] < right_poses[0]:  # bracket in bracket
+        for op_pos in op_poses:
+            if op_pos in range(left_poses[1], right_poses[0]):
+                op1_pos = op_pos
+            elif op_pos in range(left_poses[0], right_poses[1]):
+                op2_pos = op_pos
+            else:
+                op3_pos = op_pos
+
+        if can_del_parentheses(op1_pos, op2_pos, eq):
+            corrected_eq[left_poses[1]] = ' '
+            corrected_eq[right_poses[0]] = ' '
+
+        if can_del_parentheses(op2_pos, op3_pos, eq):
+            corrected_eq[left_poses[0]] = ' '
+            corrected_eq[right_poses[1]] = ' '
+
+    else:  # brackets on two sides
+        for op_pos in op_poses:
+            if op_pos in range(left_poses[0], right_poses[0]):
+                op1_pos = op_pos
+            elif op_pos in range(left_poses[1], right_poses[1]):
+                op2_pos = op_pos
+            else:
+                op3_pos = op_pos
+
+        if can_del_parentheses(op1_pos, op3_pos, eq):
+            corrected_eq[left_poses[0]] = ' '
+            corrected_eq[right_poses[0]] = ' '
+
+        if can_del_parentheses(op2_pos, op3_pos, eq):
+            corrected_eq[left_poses[1]] = ' '
+            corrected_eq[right_poses[1]] = ' '
+
+    return ''.join(corrected_eq).replace(' ', '')
+
+
+# delete redundant parentheses for all correct equations
+def del_redundant_parentheses_all(eqs):
+    corrected_equations = set()
+    for eq in eqs:
+        corrected_eq = del_redundant_parentheses(eq)
+        corrected_equations.add(corrected_eq)
+    return corrected_equations
+
+
 # print result info
 def print_result(eqs):
     if len(eqs) == 0:
@@ -165,4 +230,6 @@ if __name__ == "__main__":
     numbers = get_numbers(Number_count)
     equations = get_raw_equations(numbers, Ops)
     equations = set(add_parentheses_all_check(equations, Goal))
+    if len(equations) != 0:
+        equations = del_redundant_parentheses_all(equations)
     print_result(equations)
