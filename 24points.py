@@ -22,6 +22,8 @@ def get_numbers(length):
         while True:
             try:
                 num = float(input(f'Number {i + 1}: '))
+                if num.is_integer():
+                    num = int(num)
                 num_list.append(num)
                 break
             except ValueError:
