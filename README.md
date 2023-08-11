@@ -3,6 +3,7 @@
 24 points calculator in python
 
 * no limit on the size of numbers (even floats)
+* check invalid input
 * the goal can also be adjusted, not necessarily 24
 * repetitive solutions and redundant parentheses are removed
 * only works for 4 numbers' calculation
@@ -39,5 +40,4 @@ Number 4:6
 
 **To be improved**:
 
-* check invalid input
 * add game mode, e.g., play with computer

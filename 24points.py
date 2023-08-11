@@ -16,9 +16,17 @@ def level(op):
 
 # get numbers from user input
 def get_numbers(length):
-    num_list = [0] * length
+    num_list = []
+
     for i in range(length):
-        num_list[i] = input(f'Number {i + 1}:')
+        while True:
+            try:
+                num = float(input(f'Number {i + 1}: '))
+                num_list.append(num)
+                break
+            except ValueError:
+                print('Invalid input. Please enter a valid number.')
+
     return num_list
 
 
