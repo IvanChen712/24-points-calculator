@@ -12,6 +12,10 @@
 
 **Usage**: Run `calculator.py`. Input 4 numbers in four lines and solutions will be printed.
 
+**To be improved**
+
+* When the expression contains many '+-' or '*/', there will be many duplicate solutions,e.g.,13+7+9-5.
+
 **Example**:
 
 ```
@@ -49,6 +53,10 @@ Play 24-points game with the computer.
 * based on `calculator.py`
 
 **Usage**: Run `game_mode.py`. Input `No` or the expression to calculate 24 points.
+
+**To be improved**
+
+* add speed mode
 
 **Example**:
 
