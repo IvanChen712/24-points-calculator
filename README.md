@@ -1,5 +1,7 @@
 # 24-points-calculator
 
+## Calculator
+
 24 points calculator in python
 
 * no limit on the size of numbers (even floats)
@@ -8,7 +10,7 @@
 * repetitive solutions and redundant parentheses are removed
 * only works for 4 numbers' calculation
 
-**Usage**: Input 4 numbers in four lines and solutions will be printed.
+**Usage**: Run `calculator.py`. Input 4 numbers in four lines and solutions will be printed.
 
 **Example**:
 
@@ -38,6 +40,85 @@ Number 4:6
 10 solutions in total.
 ```
 
-**To be improved**:
+## Game mode
 
-* add game mode, e.g., play with computer
+Play 24-points game with the computer.
+
+* detect invalid input
+* give solutions
+* based on `calculator.py`
+
+**Usage**: Run `game_mode.py`. Input `No` or the expression to calculate 24 points.
+
+**Example**:
+
+```
+The four numbers are [3, 8, 5, 6]
+If you think there is no solution, input 'No'.
+Otherwise, input the expression with no spaces.
+😚 Please input your answer:3*8*(6-5)
+Correct!🤩 Do you want to see all the solutions? [y/n]
+y
+8*(6/(5-3))
+8/(6-5)*3
+8*3/(6-5)
+8/((6-5)/3)
+6/((5-3)/8)
+3/((6-5)/8)
+8*(3/(6-5))
+8*6/(5-3)
+8*(5-6/3)
+8/(5-3)*6
+8*(6-5)*3
+8/((5-3)/6)
+(6-5)*3*8
+13 solutions in total.
+```
+
+```
+The four numbers are [10, 9, 6, 10]
+If you think there is no solution, input 'No'.
+Otherwise, input the expression with no spaces.
+😚 Please input your answer:No
+Brilliant!😍 You are so smart.😚 
+```
+
+```
+The four numbers are [5, 10, 6, 2]
+If you think there is no solution, input 'No'.
+Otherwise, input the expression with no spaces.
+😚 Please input your answer:5+10+6+2
+HAHA!😄 You lose.🤣👉🤡 
+6*2*10/5
+10/(5/2/6)
+2*(6/(5/10))
+10*(6/(5/2))
+2*(10*6/5)
+6/(5/2/10)
+6/(5/10/2)
+2*6/5*10
+6*2*(10/5)
+2/(5/6)*10
+2*10/(5/6)
+2*10/5*6
+6*10*(2/5)
+6*10*2/5
+10/(5/6/2)
+6*(10/(5/2))
+2*(10+5)-6
+6*10/(5/2)
+2*(10/5)*6
+(2+10/5)*6
+2/(5/(6*10))
+(5-2)*10-6
+6/(5/(10*2))
+2*10*(6/5)
+2*(10/(5/6))
+6*(2/(5/10))
+2*6/(5/10)
+6*(10*2/5)
+2/(5/10/6)
+10/(5/(6*2))
+2*(6/5)*10
+31 solutions in total.
+```

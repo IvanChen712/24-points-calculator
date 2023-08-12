@@ -225,6 +225,14 @@ def del_redundant_parentheses_all(eqs):
     return corrected_equations
 
 
+def cal_goal(nums, goal, ops):
+    eqs = get_raw_equations(nums, ops)
+    eqs = set(add_parentheses_all_check(eqs, goal))
+    if len(eqs) != 0:
+        eqs = del_redundant_parentheses_all(eqs)
+    return eqs
+
+
 # print result info
 def print_result(eqs):
     if len(eqs) == 0:
@@ -238,8 +246,5 @@ def print_result(eqs):
 
 if __name__ == "__main__":
     numbers = get_numbers(Number_count)
-    equations = get_raw_equations(numbers, Ops)
-    equations = set(add_parentheses_all_check(equations, Goal))
-    if len(equations) != 0:
-        equations = del_redundant_parentheses_all(equations)
+    equations = cal_goal(numbers, Goal, Ops)
     print_result(equations)
