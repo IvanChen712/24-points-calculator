@@ -21,7 +21,7 @@ Number 1:3
 Number 2:3
 Number 3:7
 Number 4:7
-7*(3+(3/7))
+7*(3+3/7)
 1 solutions in total.
 ```
     
