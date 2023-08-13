@@ -1,6 +1,8 @@
 import random
-import re
-from calculator import cal_goal, print_result, Goal, Ops
+
+from calculator import cal_goal, print_result
+from consts import Goal, Ops
+from utils import extract_numbers
 
 
 # Choose four random integers from 1~13
@@ -9,13 +11,6 @@ def random_numbers():
     print(f"The four numbers are {nums}")
     print(f"If you think there is no solution, input 'No'.")
     print(f"Otherwise, input the expression with no spaces.")
-    return nums
-
-
-def extract_numbers(expression):
-    nums = re.findall(r'\d+', expression)
-    nums = [int(num) for num in nums]
-    nums.sort()
     return nums
 
 

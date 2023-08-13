@@ -1,17 +1,6 @@
 from itertools import permutations, product
-
-Goal = 24
-Number_count = 4
-Ops = ['/', '*', '+', '-']
-
-
-# define level for the four operands
-def level(op):
-    if op == '*' or op == '/':
-        lv = 2
-    else:
-        lv = 1
-    return lv
+from utils import extract_numbers, extract_ops, level, find_op_pos, ops_same_level
+from consts import Goal, Number_count, Ops
 
 
 # get numbers from user input
@@ -58,15 +47,6 @@ def add_parentheses(eq, pattern):
         return f"{eq[:poses[0]+1]}(({eq[poses[0]+1:poses[2]]}){eq[poses[2]:]})"
     elif pattern == 4:
         return f"{eq[:poses[0]+1]}({eq[poses[0]+1:poses[1]+1]}({eq[poses[1]+1:]}))"
-
-
-# find the position of an operand
-def find_op_pos(eq, op):
-    op_pos = []
-    for i, char in enumerate(eq):
-        if char in op:
-            op_pos.append(i)
-    return op_pos
 
 
 # swap two parts in the equation
@@ -225,11 +205,65 @@ def del_redundant_parentheses_all(eqs):
     return corrected_equations
 
 
+# If an expression's operands have the same level, delete all versions that have parentheses.
+def same_level_repeat_parentheses(eq):
+    left_poses = find_op_pos(eq, '(')
+    right_poses = find_op_pos(eq, ')')
+    if len(left_poses) == 0:
+        return False
+    if ops_same_level(eq):
+        return True
+    else:
+        if len(left_poses) == 2 and left_poses[1] < right_poses[0]:  # bracket in bracket
+            return same_level_repeat_parentheses(eq[left_poses[0]+1:right_poses[1]])
+    return False
+
+
+def del_same_level_repeat_parentheses(eqs):
+    new_eqs = set()
+    for eq in eqs:
+        if not same_level_repeat_parentheses(eq):
+            new_eqs.add(eq)
+    return new_eqs
+
+
+# If an expression's operands have the same level, changing the order of numbers doesn't generate new solutions.
+def same_level_repeat_order(eq, pre_eq):
+    left_poses_eq = find_op_pos(eq, '(')
+    right_poses_eq = find_op_pos(eq, ')')
+    left_poses_pre_eq = find_op_pos(eq, '(')
+    right_poses_pre_eq = find_op_pos(eq, ')')
+    ops_eq = extract_ops(eq)
+    ops_pre_eq = extract_ops(pre_eq)
+    nums_eq = extract_numbers(eq)
+    nums_pre_eq = extract_numbers(pre_eq)
+    if len(left_poses_eq) != len(left_poses_pre_eq):
+        return False
+    if len(left_poses_eq) == 0:
+        if ops_same_level(eq) and len(ops_eq) > 1:
+            return sorted(nums_eq) == sorted(nums_pre_eq) and sorted(ops_eq) == sorted(ops_pre_eq)
+        else:
+            return False
+    elif len(left_poses_eq) == 1:
+        return same_level_repeat_order(eq[left_poses_eq[0]+1:right_poses_eq[0]]
+                                       , eq[left_poses_pre_eq[0]+1:right_poses_pre_eq[0]])
+
+
+def del_same_level_repeat_order(eqs):
+    new_eqs = set()
+    for eq in eqs:
+        if all(not same_level_repeat_order(eq, prev_eq) for prev_eq in new_eqs):
+            new_eqs.add(eq)
+    return new_eqs
+
+
 def cal_goal(nums, goal, ops):
     eqs = get_raw_equations(nums, ops)
     eqs = set(add_parentheses_all_check(eqs, goal))
     if len(eqs) != 0:
         eqs = del_redundant_parentheses_all(eqs)
+        eqs = del_same_level_repeat_parentheses(eqs)
+        eqs = del_same_level_repeat_order(eqs)
     return eqs
 
 
